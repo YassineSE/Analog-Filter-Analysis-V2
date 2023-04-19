@@ -2,7 +2,7 @@
 from scipy.signal import lti
 import numpy as np
 import control as ctl
-from control_plotly import step,bode
+from control_plotly import step,bode,pzmap
 
 class Filter():
     #Main Class for all filters
@@ -17,17 +17,28 @@ class Filter():
         return {}
     
     def get_type(self):
-        return "abc"
+        return "Filter"
 
     def plot_bode(self):
-        title = self.get_type()
+        p = self.get_params()
+        params = "".join([str(i) + " : " + str(j) + ", " for i,j in zip(p.keys(), p.values())])
         sys = self.get_sys()
         fig = bode(sys)
-        fig.update_layout(title=dict(text=title, font=dict(size=20)))
+        fig.update_layout(title=dict(text=params, font=dict(size=20)))
         fig.show()
     
     def plot_step(self):
+        p = self.get_params()
+        params = "".join([str(i) + " : " + str(j) + ", " for i,j in zip(p.keys(), p.values())])
         sys = self.get_sys()
         fig = step(sys)
+        fig.update_layout(title=dict(text=params, font=dict(size=20)))
         fig.show()
 
+    def plot_poles(self):
+        p = self.get_params()
+        params = "".join([str(i) + " : " + str(j) + ", " for i,j in zip(p.keys(), p.values())])
+        sys = self.get_sys()
+        fig = pzmap(sys)
+        fig.update_layout(title=dict(text=params, font=dict(size=20)))
+        fig.show()

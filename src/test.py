@@ -4,6 +4,8 @@ import control as ctl
 from control_plotly import step,bode
 from core import Filter
 import first_order
+import second_order
 
-hp1 = first_order.HP(10,2000)
-print(hp1.get_type())
+hp2 = second_order.BS(10,2000,0.1)
+print(issubclass(second_order.BP, Filter))
+
