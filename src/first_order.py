@@ -2,7 +2,10 @@ from core import Filter
 import numpy as np
 import control as ctl
 
-class LP(Filter):
+class First_Order():
+    pass
+
+class LP(First_Order, Filter):
 
     def __init__(self, T0, w0):
         self.type = "First Order Low Pass Filter"
@@ -25,7 +28,7 @@ class LP(Filter):
         return self.type
 
 
-class HP(Filter):
+class HP(First_Order, Filter):
 
     def __init__(self, Too, w0):
         self.type = "First Order High Pass Filter"

@@ -66,7 +66,7 @@ class HP(Second_Order, Filter):
         return {
             "type" : self.type,
             "w0" : self.w0,
-            "gain_high" : self.T0,
+            "gain_high" : self.Too,
             "Q" : 1/(2*self.m),
             "has_overshoot" : self.has_overshoot(),
             "has_resonance" : self.has_resonance(),

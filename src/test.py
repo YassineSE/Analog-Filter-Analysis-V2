@@ -6,6 +6,5 @@ from core import Filter
 import first_order
 import second_order
 
-hp2 = second_order.BS(10,2000,0.1)
-print(issubclass(second_order.BP, Filter))
-
+hp1 = first_order.HP(1,1000)
+print(hp1.calc_componants("SPL"))
