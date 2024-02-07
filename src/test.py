@@ -1,10 +1,8 @@
-from scipy.signal import lti
-import numpy as np
-import control as ctl
-from control_plotly import step,bode
-from core import Filter
 import first_order
 import second_order
+import circuits
+import scipy.signal as sig
 
-hp1 = first_order.HP(1,1000)
-print(hp1.calc_componants("SPL"))
+
+b1 = second_order.BP(1,1000,0.1)
+b1.plot_bode()

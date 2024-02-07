@@ -1,6 +1,6 @@
 from core import Filter
 import numpy as np
-import control as ctl
+import scipy.signal as sig
 
 class First_Order():
     pass
@@ -15,7 +15,7 @@ class LP(First_Order, Filter):
     def get_sys(self):
         num = np.array([self.T0])
         den = np.array([1/self.w0, 1])
-        return ctl.tf(num,den)
+        return sig.lti(num,den)
 
     def get_params(self):
         return {
@@ -26,6 +26,7 @@ class LP(First_Order, Filter):
     
     def get_type(self):
         return self.type
+    
 
 
 class HP(First_Order, Filter):
@@ -38,7 +39,7 @@ class HP(First_Order, Filter):
     def get_sys(self):
         num = np.array([self.Too,0])
         den = np.array([1/self.w0, 1])
-        return ctl.tf(num,den)
+        return sig.lti(num,den)
     
     def get_params(self):
         return {

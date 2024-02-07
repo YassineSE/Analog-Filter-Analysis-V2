@@ -4,6 +4,9 @@ import numpy as np
 import control as ctl
 from control_plotly import step,bode,pzmap
 
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import scipy.signal as sig
 
 class Filter():
     #Main Class for all filters
@@ -12,7 +15,7 @@ class Filter():
         self.name = name
     
     def get_sys(self):
-        return ctl.tf([1], [1,1])
+        return sig.lti([1], [1,1])
     
     def get_params(self):
         return {}
@@ -21,27 +24,70 @@ class Filter():
         return "Filter"
 
     def plot_bode(self):
-        p = self.get_params()
-        params = "".join([str(i) + " : " + str(j) + ", " for i,j in zip(p.keys(), p.values())])
+        
         sys = self.get_sys()
-        fig = bode(sys)
-        fig.update_layout(title=dict(text=params, font=dict(size=20)))
+        w, Hjw = sys.freqresp(f=10**np.linspace(0,6,200))
+        w=2*np.pi*f
+
+        modulus = np.abs(Hjw)
+        phase = 180*np.angle(Hjw)/np.pi
+        
+        # create plot
+        fig = make_subplots(rows=2, cols=1, shared_xaxes=True)
+        fig.add_trace(go.Scatter(x=w, y=modulus, mode='lines', name="modulus"), row=1, col=1)
+        
+        fig.add_trace(go.Scatter(x=w, y=phase, mode='lines', name="phase"), row=2, col=1)
+
+        # update axes (name / type)
+        fig.update_xaxes(title_text="Angular Frequency [rad/s]", type="log")
+        fig.update_yaxes(title_text="Modulus", type="log", row=1, col=1)
+        fig.update_yaxes(title_text="Phase (deg)", row=2, col=1)
+        fig.update_layout(title_text="Bode Plot")
+
         fig.show()
     
+    
     def plot_step(self):
-        p = self.get_params()
-        params = "".join([str(i) + " : " + str(j) + ", " for i,j in zip(p.keys(), p.values())])
+        
         sys = self.get_sys()
-        fig = step(sys)
-        fig.update_layout(title=dict(text=params, font=dict(size=20)))
+        t, s = sys.step()
+
+        # create plot
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=t, y=s, mode='lines'))
+
+        # update axes (name / type)
+        fig.update_yaxes(title_text="response")
+        fig.update_xaxes(title_text="time [s]")
+        fig.update_layout(title_text="Step Response Plot")
+
         fig.show()
 
     def plot_poles(self):
-        p = self.get_params()
-        params = "".join([str(i) + " : " + str(j) + ", " for i,j in zip(p.keys(), p.values())])
-        sys = self.get_sys()
-        fig = pzmap(sys)
-        fig.update_layout(title=dict(text=params, font=dict(size=20)))
+        poles = self.get_sys().poles
+        zeros = self.get_sys().zeros
+
+        # create plot
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=poles.real, 
+                                y=poles.imag,
+                                mode='markers',
+                                marker_symbol='x',
+                                marker_size=15,
+                                name="poles"
+                                ))
+        fig.add_trace(go.Scatter(x=zeros.real, 
+                                y=zeros.imag, 
+                                mode='markers',
+                                marker_symbol='circle',
+                                marker_size=15,
+                                name="zeros"
+                                ))
+
+        # update axes (name / type)
+        fig.update_xaxes(title_text="Real Part")
+        fig.update_yaxes(title_text="Imag Part")
+        fig.update_layout(title_text="Poles and Zeroes Plot")
         fig.show()
 
     def calc_componants(self, type):
